@@ -1,195 +1,1821 @@
+
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
-  "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
+"openapi": "3.1.0",
+"info": {
+"title": "ThinkRoman API",
+"version": "1.0.0",
+"description": "\nThe ThinkRoman API provides a powerful and convenient way to interact with Whatsapp, Cloudflare R2 and other services, enabling you to send various types of messages and notifications to Whatsapp users.\n\n## Getting Started\n\nTo get started with the ThinkRoman API, follow these steps:\n\n1. Obtain the necessary credentials and API keys from ThinkRoman.\n2. Set up your environment with the required libraries and tools.\n3. Refer to the API documentation to understand the available endpoints and their usage.\n4. Make API requests.\n"
+},
+"tags": [
+{
+"name": "Whatsapp Templates",
+"description": "Send Whatsapp message using predefined templates."
+},
+{
+"name": "Keys",
+"description": "Manage and distribute API Keys to accesss Whatsapp API, Cloudflare R2 and other services."
 }
+],
+"servers": [
+{
+"url": "https://api.thinkroman.com",
+"description": "Production"
+}
+],
+"components": {
+"securitySchemes": {
+"Bearer": {
+"bearerFormat": "Bearer SECRET",
+"type": "http",
+"scheme": "bearer"
+}
+},
+"schemas": {
+"ErrBadRequest": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"BAD_REQUEST"
+],
+"description": "A machine readable error code.",
+"example": "BAD_REQUEST"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrUnauthorized": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"UNAUTHORIZED"
+],
+"description": "A machine readable error code.",
+"example": "UNAUTHORIZED"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrForbidden": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"FORBIDDEN"
+],
+"description": "A machine readable error code.",
+"example": "FORBIDDEN"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrNotFound": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"NOT_FOUND"
+],
+"description": "A machine readable error code.",
+"example": "NOT_FOUND"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrConflict": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"CONFLICT"
+],
+"description": "A machine readable error code.",
+"example": "CONFLICT"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrTooManyRequests": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"TOO_MANY_REQUESTS"
+],
+"description": "A machine readable error code.",
+"example": "TOO_MANY_REQUESTS"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+},
+"ErrInternalServerError": {
+"type": "object",
+"properties": {
+"error": {
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"enum": [
+"INTERNAL_SERVER_ERROR"
+],
+"description": "A machine readable error code.",
+"example": "INTERNAL_SERVER_ERROR"
+},
+"message": {
+"type": "string",
+"description": "A human readable explanation of what went wrong"
+}
+},
+"required": [
+"code",
+"message"
+]
+}
+},
+"required": [
+"error"
+]
+}
+},
+"parameters": {}
+},
+"paths": {
+"/v1/keys/whatsapp.createKey": {
+"post": {
+"tags": [
+"Keys"
+],
+"operationId": "v1.keys.createWhatsappKey",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Create Whatsapp Key",
+"description": "This API allows you to create a new Whatsapp key. This key is used to send messages to Whatsapp users.",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"minLength": 3,
+"description": "Name of the key",
+"example": "TrCare"
+}
+},
+"required": [
+"name"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "The created whatsapp key",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"keyId": {
+"type": "string",
+"description": "The key id",
+"example": "key_1234567890"
+},
+"key": {
+"type": "string",
+"description": "The created whatsapp key",
+"example": "wa_1234567890"
+}
+},
+"required": [
+"keyId",
+"key"
+]
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/keys/whatsapp.deleteKey": {
+"post": {
+"tags": [
+"Keys"
+],
+"operationId": "v1.keys.deleteWhatsappKey",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Delete Whatsapp Key",
+"description": "This API allows you to delete an existing Whatsapp key. This key is used to send messages to Whatsapp users.",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"keyId": {
+"type": "string",
+"description": "The keyId of the key to delete",
+"example": "key_1234567890"
+}
+},
+"required": [
+"keyId"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "The created whatsapp key",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"message": {
+"type": "string",
+"description": "Success message",
+"example": "Key deleted successfully"
+}
+},
+"required": [
+"message"
+]
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/keys/whatsapp.updateKey": {
+"post": {
+"tags": [
+"Keys"
+],
+"operationId": "v1.keys.updateWhatsappKey",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Update Whatsapp Key",
+"description": "This API allows you to update an existing Whatsapp key. This key is used to send messages to Whatsapp users.",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"keyId": {
+"type": "string",
+"description": "The keyId of the key to update",
+"example": "key_1234567890"
+},
+"name": {
+"type": "string",
+"minLength": 1,
+"description": "The name of the key",
+"example": "My key"
+}
+},
+"required": [
+"keyId",
+"name"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "The created whatsapp key",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"message": {
+"type": "string",
+"description": "Success message",
+"example": "Key updated successfully"
+}
+},
+"required": [
+"message"
+]
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/templates/whatsapp.appointmentCancellationDoctor": {
+"post": {
+"tags": [
+"Whatsapp Templates"
+],
+"operationId": "v1.templates.appointmentCancellationDoctor",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Appointment Cancellation (Doctor)",
+"description": "\nThis API allows you to send a predefined appointment  \ncancellation confirmation message to a doctor.\n\n# Template\n  ```text\n  TrDerma Appointment Cancellation Confirmation\n\n  Hello Dr. Ashwani Dhar,\n\n  We regret to inform you that your appointment  \n  with John has been cancelled. We apologize  \n  for any inconvenience this may have caused.\n\n  The cancelled appointment was scheduled for  \n  26th May 2024 from 03:00 PM to 05:00 PM.\n\n  Best regards,\n  TrDerma Team\n  ```\n",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"to": {
+"type": "string",
+"minLength": 10,
+"description": "Receipient phone number",
+"example": "+1234567890"
+},
+"lang": {
+"type": "string",
+"enum": [
+"en_US"
+],
+"default": "en_US",
+"description": "Language of the message",
+"example": "en_US"
+},
+"appName": {
+"type": "string",
+"minLength": 5,
+"description": "App name",
+"example": "TrCare"
+},
+"patientName": {
+"type": "string",
+"description": "Patient name",
+"example": "John"
+},
+"doctorName": {
+"type": "string",
+"description": "Doctor name",
+"example": "Dr. Ashwani Dhar"
+},
+"appointment": {
+"type": "object",
+"properties": {
+"date": {
+"type": "string",
+"description": "Appointment date",
+"example": "26th May, 2024"
+},
+"startTime": {
+"type": "string",
+"description": "Appointment start time",
+"example": "03:00 PM"
+},
+"endTime": {
+"type": "string",
+"description": "Appointment end time",
+"example": "05:00 PM"
+}
+},
+"required": [
+"date",
+"startTime",
+"endTime"
+],
+"description": "Appointment details",
+"example": {
+"date": "26th May, 2024",
+"startTime": "03:00 PM",
+"endTime": "05:00 PM"
+}
+}
+},
+"required": [
+"to",
+"appName",
+"patientName",
+"doctorName",
+"appointment"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Reponse from the Whatsapp API",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"messaging_product": {
+"type": "string",
+"description": "The messaging service used",
+"example": "whatsapp"
+},
+"contacts": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"input": {
+"type": "string",
+"description": "The input phone number",
+"example": "+1234567890"
+},
+"wa_id": {
+"type": "string",
+"description": "The Whatsapp ID of the contact",
+"example": "1234567890"
+}
+},
+"required": [
+"input",
+"wa_id"
+]
+}
+},
+"messages": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"description": "The ID of the sent message",
+"example": "wamid.abcdefghijklmnopqrstuvwxyz"
+}
+},
+"required": [
+"id"
+]
+}
+}
+},
+"required": [
+"messaging_product",
+"contacts",
+"messages"
+],
+"description": "The response from the Whatsapp API after sending a template message"
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/templates/whatsapp.appointmentCancellationPatient": {
+"post": {
+"tags": [
+"Whatsapp Templates"
+],
+"operationId": "v1.templates.appointmentCancellationPatient",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Appointment Cancellation (Patient)",
+"description": "\nThis API allows you to send a predefined appointment  \ncancellation confirmation message to a patient.\n\n# Template\n  ```text\n  TrDerma Appointment Cancellation Confirmation\n\n  Hello John,\n\n  We regret to inform you that your appointment  \n  with Dr. Ashwani Dhar has been cancelled. We   \n  apologize for any inconvenience this may have  \n  caused.\n\n  The cancelled appointment was scheduled for  \n  26th May 2024 from 03:00 PM to 05:00 PM.\n\n  Best regards,\n  TrDerma Team\n  ```\n",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"to": {
+"type": "string",
+"minLength": 10,
+"description": "Receipient phone number",
+"example": "+1234567890"
+},
+"lang": {
+"type": "string",
+"enum": [
+"en_US"
+],
+"default": "en_US",
+"description": "Language of the message",
+"example": "en_US"
+},
+"appName": {
+"type": "string",
+"minLength": 5,
+"description": "App name",
+"example": "TrCare"
+},
+"patientName": {
+"type": "string",
+"description": "Patient name",
+"example": "John"
+},
+"doctorName": {
+"type": "string",
+"description": "Doctor name",
+"example": "Dr. Ashwani Dhar"
+},
+"appointment": {
+"type": "object",
+"properties": {
+"date": {
+"type": "string",
+"description": "Appointment date",
+"example": "26th May, 2024"
+},
+"startTime": {
+"type": "string",
+"description": "Appointment start time",
+"example": "03:00 PM"
+},
+"endTime": {
+"type": "string",
+"description": "Appointment end time",
+"example": "05:00 PM"
+}
+},
+"required": [
+"date",
+"startTime",
+"endTime"
+],
+"description": "Appointment details",
+"example": {
+"date": "26th May, 2024",
+"startTime": "03:00 PM",
+"endTime": "05:00 PM"
+}
+}
+},
+"required": [
+"to",
+"appName",
+"patientName",
+"doctorName",
+"appointment"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Reponse from the Whatsapp API",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"messaging_product": {
+"type": "string",
+"description": "The messaging service used",
+"example": "whatsapp"
+},
+"contacts": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"input": {
+"type": "string",
+"description": "The input phone number",
+"example": "+1234567890"
+},
+"wa_id": {
+"type": "string",
+"description": "The Whatsapp ID of the contact",
+"example": "1234567890"
+}
+},
+"required": [
+"input",
+"wa_id"
+]
+}
+},
+"messages": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"description": "The ID of the sent message",
+"example": "wamid.abcdefghijklmnopqrstuvwxyz"
+}
+},
+"required": [
+"id"
+]
+}
+}
+},
+"required": [
+"messaging_product",
+"contacts",
+"messages"
+],
+"description": "The response from the Whatsapp API after sending a template message"
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/templates/whatsapp.appointmentConfirmationDoctor": {
+"post": {
+"tags": [
+"Whatsapp Templates"
+],
+"operationId": "v1.templates.appointmentConfirmationDoctor",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Appointment Confirmation (Doctor)",
+"description": "\nThis API allows you to send a predefined appointment  \nconfirmation message to a doctor.\n\n# Template\n  ```text\n  TrDerma Appointment Confirmation\n\n  Hello Dr. Ashwani Dhar,\n\n  We are pleased to inform you that you have  \n  a new appointment booked.\n\n  The appointment is scheduled for 26th May 2024  \n  from 3:00 PM to 05:00 PM.\n\n  Please check your schedule and ensure that you  \n  are available at the specified time.\n\n  Best regards,\n  TrDerma Team\n  ```\n",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"to": {
+"type": "string",
+"minLength": 10,
+"description": "Receipient phone number",
+"example": "+1234567890"
+},
+"lang": {
+"type": "string",
+"enum": [
+"en_US"
+],
+"default": "en_US",
+"description": "Language of the message",
+"example": "en_US"
+},
+"appName": {
+"type": "string",
+"minLength": 5,
+"description": "App name",
+"example": "TrCare"
+},
+"doctorName": {
+"type": "string",
+"description": "Doctor name",
+"example": "Dr. Ashwani Dhar"
+},
+"appointment": {
+"type": "object",
+"properties": {
+"date": {
+"type": "string",
+"description": "Appointment date",
+"example": "26th May, 2024"
+},
+"startTime": {
+"type": "string",
+"description": "Appointment start time",
+"example": "03:00 PM"
+},
+"endTime": {
+"type": "string",
+"description": "Appointment end time",
+"example": "05:00 PM"
+}
+},
+"required": [
+"date",
+"startTime",
+"endTime"
+],
+"description": "Appointment details",
+"example": {
+"date": "26th May, 2024",
+"startTime": "03:00 PM",
+"endTime": "05:00 PM"
+}
+}
+},
+"required": [
+"to",
+"appName",
+"doctorName",
+"appointment"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Reponse from the Whatsapp API",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"messaging_product": {
+"type": "string",
+"description": "The messaging service used",
+"example": "whatsapp"
+},
+"contacts": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"input": {
+"type": "string",
+"description": "The input phone number",
+"example": "+1234567890"
+},
+"wa_id": {
+"type": "string",
+"description": "The Whatsapp ID of the contact",
+"example": "1234567890"
+}
+},
+"required": [
+"input",
+"wa_id"
+]
+}
+},
+"messages": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"description": "The ID of the sent message",
+"example": "wamid.abcdefghijklmnopqrstuvwxyz"
+}
+},
+"required": [
+"id"
+]
+}
+}
+},
+"required": [
+"messaging_product",
+"contacts",
+"messages"
+],
+"description": "The response from the Whatsapp API after sending a template message"
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/templates/whatsapp.appointmentConfirmationPatient": {
+"post": {
+"tags": [
+"Whatsapp Templates"
+],
+"operationId": "v1.templates.appointmentConfirmationPatient",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "Appointment Confirmation (Patient)",
+"description": "\nThis API allows you to send a predefined appointment  \nconfirmation message to a patient.\n\n# Template\n  ```text\n  TrDerma Appointment Confirmation\n\n  Hello John,\n\n  Your appointment with Dr. Ashwani Dhar has been  \n  successfully booked. The appointment is scheduled  \n  for 26th May 2024 from 3:00 PM to 05:00 PM.\n\n  Please be available at the scheduled time. We look  \n  forward to providing you with quality healthcare.\n\n  Best regards,  \n  TrDerma Team\n  ```\n",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"to": {
+"type": "string",
+"minLength": 10,
+"description": "Receipient phone number",
+"example": "+1234567890"
+},
+"lang": {
+"type": "string",
+"enum": [
+"en_US"
+],
+"default": "en_US",
+"description": "Language of the message",
+"example": "en_US"
+},
+"appName": {
+"type": "string",
+"minLength": 5,
+"description": "App name",
+"example": "TrCare"
+},
+"patientName": {
+"type": "string",
+"description": "Patient name",
+"example": "John"
+},
+"doctorName": {
+"type": "string",
+"description": "Doctor name",
+"example": "Dr. Ashwani Dhar"
+},
+"appointment": {
+"type": "object",
+"properties": {
+"date": {
+"type": "string",
+"description": "Appointment date",
+"example": "26th May, 2024"
+},
+"startTime": {
+"type": "string",
+"description": "Appointment start time",
+"example": "03:00 PM"
+},
+"endTime": {
+"type": "string",
+"description": "Appointment end time",
+"example": "05:00 PM"
+}
+},
+"required": [
+"date",
+"startTime",
+"endTime"
+],
+"description": "Appointment details",
+"example": {
+"date": "26th May, 2024",
+"startTime": "03:00 PM",
+"endTime": "05:00 PM"
+}
+}
+},
+"required": [
+"to",
+"appName",
+"patientName",
+"doctorName",
+"appointment"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Reponse from the Whatsapp API",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"messaging_product": {
+"type": "string",
+"description": "The messaging service used",
+"example": "whatsapp"
+},
+"contacts": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"input": {
+"type": "string",
+"description": "The input phone number",
+"example": "+1234567890"
+},
+"wa_id": {
+"type": "string",
+"description": "The Whatsapp ID of the contact",
+"example": "1234567890"
+}
+},
+"required": [
+"input",
+"wa_id"
+]
+}
+},
+"messages": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"description": "The ID of the sent message",
+"example": "wamid.abcdefghijklmnopqrstuvwxyz"
+}
+},
+"required": [
+"id"
+]
+}
+}
+},
+"required": [
+"messaging_product",
+"contacts",
+"messages"
+],
+"description": "The response from the Whatsapp API after sending a template message"
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+},
+"/v1/templates/whatsapp.trcareDemo": {
+"post": {
+"tags": [
+"Whatsapp Templates"
+],
+"operationId": "v1.templates.trcareDemo",
+"security": [
+{
+"Bearer": []
+}
+],
+"summary": "TrCare Demo Credentials",
+"description": "\nThis API allows you to send a predefined demo confirmation message to a user.\n\n# Template\n  ```text\n  TrCare Demo Confirmation\n\n  Thank you for your interest in the TrCare Telehealth Portal. \n  As requested, we have set up demo accounts for you to explore \n  the portal's features and functionalities at your convenience.\n\n  Below are the credentials for accessing the demo:\n\n  Admin Portal:\n  Email: admin@app.com\n  Password: password\n  Login Link: https://care.thinkroman.com/login-admin\n\n  Provider Portal:\n  Email: provider@app.com\n  Password: password\n  Login Link: https://care.thinkroman.com/login-provider\n\n  Patient Portal:\n  Email: patient@app.com\n  Password: password\n  Login Link: https://care.thinkroman.com/login-patient\n\n  Please note that these demo credentials will remain valid until  \n  26th May 2024 07:00PM IST. We encourage you to explore the  \n  portal thoroughly during this period to familiarize yourself  \n  with its capabilities and benefits.\n\n  Thank you for your interest in our telehealth solution.  \n  We look forward to your feedback and the opportunity   \n  to serve your healthcare needs.\n\n  Best regards,\n  The TrCare Team\n  ```\n",
+"requestBody": {
+"required": true,
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"to": {
+"type": "string",
+"minLength": 10,
+"description": "Receipient phone number",
+"example": "+1234567890"
+},
+"lang": {
+"type": "string",
+"enum": [
+"en_US"
+],
+"default": "en_US",
+"description": "Language of the message",
+"example": "en_US"
+},
+"adminCrendentials": {
+"type": "object",
+"properties": {
+"email": {
+"type": "string",
+"format": "email",
+"description": "Email of the admin",
+"example": "admin@app.com"
+},
+"password": {
+"type": "string",
+"minLength": 5,
+"description": "Password of the admin",
+"example": "password"
+},
+"link": {
+"type": "string",
+"format": "uri",
+"description": "Login link to web portal",
+"example": "https://care.thinkroman.com/login-admin"
+}
+},
+"required": [
+"email",
+"password",
+"link"
+]
+},
+"providerCrendentials": {
+"type": "object",
+"properties": {
+"email": {
+"type": "string",
+"format": "email",
+"description": "Email of the provider",
+"example": "provider@app.com"
+},
+"password": {
+"type": "string",
+"minLength": 5,
+"description": "Password of the provider",
+"example": "password"
+},
+"link": {
+"type": "string",
+"format": "uri",
+"description": "Login link to web portal",
+"example": "https://care.thinkroman.com/login-provider"
+}
+},
+"required": [
+"email",
+"password",
+"link"
+]
+},
+"patientCrendentials": {
+"type": "object",
+"properties": {
+"email": {
+"type": "string",
+"format": "email",
+"description": "Email of the patient",
+"example": "patient@app.com"
+},
+"password": {
+"type": "string",
+"minLength": 5,
+"description": "Password of the patient",
+"example": "password"
+},
+"link": {
+"type": "string",
+"format": "uri",
+"description": "Login link to web portal",
+"example": "https://care.thinkroman.com/login-patient"
+}
+},
+"required": [
+"email",
+"password",
+"link"
+]
+},
+"validTill": {
+"type": "string",
+"minLength": 5,
+"description": "Validity of the credentials",
+"example": "26th May 2024 07:00PM IST"
+}
+},
+"required": [
+"to",
+"adminCrendentials",
+"providerCrendentials",
+"patientCrendentials",
+"validTill"
+]
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Reponse from the Whatsapp API",
+"content": {
+"application/json": {
+"schema": {
+"type": "object",
+"properties": {
+"messaging_product": {
+"type": "string",
+"description": "The messaging service used",
+"example": "whatsapp"
+},
+"contacts": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"input": {
+"type": "string",
+"description": "The input phone number",
+"example": "+1234567890"
+},
+"wa_id": {
+"type": "string",
+"description": "The Whatsapp ID of the contact",
+"example": "1234567890"
+}
+},
+"required": [
+"input",
+"wa_id"
+]
+}
+},
+"messages": {
+"type": "array",
+"items": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"description": "The ID of the sent message",
+"example": "wamid.abcdefghijklmnopqrstuvwxyz"
+}
+},
+"required": [
+"id"
+]
+}
+}
+},
+"required": [
+"messaging_product",
+"contacts",
+"messages"
+],
+"description": "The response from the Whatsapp API after sending a template message"
+}
+}
+}
+},
+"400": {
+"description": "Invalid request. Please check your request and try again.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrBadRequest"
+}
+}
+}
+},
+"401": {
+"description": "Unauthorized. Please provide a valid bearer token.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrUnauthorized"
+}
+}
+}
+},
+"403": {
+"description": "Forbidden. You do not have permission to access this resource.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrForbidden"
+}
+}
+}
+},
+"404": {
+"description": "Resource not found. The requested resource does not exist.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrNotFound"
+}
+}
+}
+},
+"409": {
+"description": "Conflict. The request conflicts with the current state of the server.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrConflict"
+}
+}
+}
+},
+"429": {
+"description": "Too many requests. Please try again later.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrTooManyRequests"
+}
+}
+}
+},
+"500": {
+"description": "Server error. Something went wrong on our end.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrInternalServerError"
+}
+}
+}
+}
+}
+}
+}
+},
+"webhooks": {}
+}
+✕
